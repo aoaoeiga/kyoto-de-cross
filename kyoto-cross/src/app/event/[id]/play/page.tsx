@@ -129,7 +129,6 @@ export default function PlayPage() {
         <ProgressDots
           total={screens.length}
           current={currentScreen}
-          phase={screen.phase}
           screens={screens}
         />
       </div>

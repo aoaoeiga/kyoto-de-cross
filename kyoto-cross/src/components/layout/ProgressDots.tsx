@@ -5,12 +5,10 @@ import { Screen } from '@/lib/types';
 type ProgressDotsProps = {
   total: number;
   current: number;
-  phase?: number;
   screens?: Screen[];
 };
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-export default function ProgressDots({ total, current, phase, screens }: ProgressDotsProps) {
+export default function ProgressDots({ total, current, screens }: ProgressDotsProps) {
   // Group dots by phase for subtle spacing
   const getPhaseForIndex = (i: number) => screens?.[i]?.phase;
 
