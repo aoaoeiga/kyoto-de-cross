@@ -16,12 +16,12 @@ export default function Button({
   disabled,
   ...props
 }: ButtonProps) {
-  const base = 'font-sans font-medium rounded-lg transition-all focus:outline-none focus:ring-2 focus:ring-gold/50';
+  const base = 'font-sans font-medium rounded-lg transition-all duration-200 focus:outline-none';
 
   const variants = {
-    primary: 'bg-gold text-navy hover:bg-gold-light active:bg-gold-dark',
-    secondary: 'border border-gold/40 text-gold hover:bg-gold/10 active:bg-gold/20',
-    ghost: 'text-gold/70 hover:text-gold hover:bg-gold/5',
+    primary: 'bg-gold text-bg hover:bg-gold-hover active:brightness-90',
+    secondary: 'border border-gold/40 text-gold hover:border-gold hover:bg-gold/5 active:bg-gold/10',
+    ghost: 'text-gold/60 hover:text-gold hover:bg-white/5',
   };
 
   const sizes = {
@@ -32,8 +32,8 @@ export default function Button({
 
   return (
     <motion.button
-      whileTap={{ scale: 0.97 }}
-      className={`${base} ${variants[variant]} ${sizes[size]} ${disabled ? 'opacity-40 cursor-not-allowed' : ''} ${className}`}
+      whileTap={disabled ? undefined : { scale: 0.97 }}
+      className={`${base} ${variants[variant]} ${sizes[size]} ${disabled ? 'opacity-30 cursor-not-allowed' : ''} ${className}`}
       disabled={disabled}
       {...(props as React.ComponentPropsWithoutRef<typeof motion.button>)}
     >

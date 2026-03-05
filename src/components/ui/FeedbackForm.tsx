@@ -18,85 +18,91 @@ export default function FeedbackForm({ onSubmit, isSubmitting }: FeedbackFormPro
   const [memorableCard, setMemorableCard] = useState('');
   const [recommendScore, setRecommendScore] = useState<number | null>(null);
 
-  const canSubmit =
-    wantToMeetAgain !== null && recommendScore !== null;
+  const canSubmit = wantToMeetAgain !== null && recommendScore !== null;
 
   return (
     <motion.div
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
-      className="mx-auto max-w-sm space-y-8 px-6"
+      transition={{ duration: 0.8 }}
+      className="mx-auto max-w-sm space-y-10 px-6"
     >
-      {/* Question 1 */}
+      {/* Question 1: Want to meet again? */}
       <div>
-        <p className="mb-2 font-serif text-lg text-white/90">
+        <p className="mb-2 font-jp text-lg text-text-main">
           今日出会った人に、また会いたいですか？
         </p>
-        <p className="mb-4 text-sm text-white/40">
+        <div className="gold-line mb-3" />
+        <p className="mb-5 font-sans text-sm text-text-sub italic">
           Do you want to meet the people you met today again?
         </p>
-        <div className="flex gap-3">
-          <button
+        <div className="flex gap-4">
+          <motion.button
+            whileTap={{ scale: 0.97 }}
             onClick={() => setWantToMeetAgain(true)}
-            className={`flex-1 rounded-lg border px-4 py-3 transition-all ${
+            className={`flex-1 rounded-xl border-2 py-4 font-sans text-base font-medium transition-all duration-200 ${
               wantToMeetAgain === true
-                ? 'border-gold bg-gold/10 text-gold'
-                : 'border-white/10 text-white/60 hover:border-gold/30'
+                ? 'border-gold bg-gold text-bg'
+                : 'border-white/10 bg-bg-card text-text-main hover:border-gold/30'
             }`}
           >
             はい / Yes
-          </button>
-          <button
+          </motion.button>
+          <motion.button
+            whileTap={{ scale: 0.97 }}
             onClick={() => setWantToMeetAgain(false)}
-            className={`flex-1 rounded-lg border px-4 py-3 transition-all ${
+            className={`flex-1 rounded-xl border-2 py-4 font-sans text-base font-medium transition-all duration-200 ${
               wantToMeetAgain === false
-                ? 'border-gold bg-gold/10 text-gold'
-                : 'border-white/10 text-white/60 hover:border-gold/30'
+                ? 'border-white/30 bg-white/10 text-text-main'
+                : 'border-white/10 bg-bg-card text-text-main hover:border-white/20'
             }`}
           >
             いいえ / No
-          </button>
+          </motion.button>
         </div>
       </div>
 
-      {/* Question 2 */}
+      {/* Question 2: Memorable card */}
       <div>
-        <p className="mb-2 font-serif text-lg text-white/90">
+        <p className="mb-2 font-jp text-lg text-text-main">
           一番印象に残ったカードは？
         </p>
-        <p className="mb-4 text-sm text-white/40">
+        <div className="gold-line mb-3" />
+        <p className="mb-5 font-sans text-sm text-text-sub italic">
           Which card was most memorable?
         </p>
-        <input
-          type="text"
+        <textarea
           value={memorableCard}
           onChange={(e) => setMemorableCard(e.target.value)}
           placeholder="自由に書いてください / Free text"
-          className="w-full rounded-lg border border-white/10 bg-navy-light px-4 py-3 text-white/90 placeholder:text-white/20 focus:border-gold/50 focus:outline-none"
+          rows={3}
+          className="w-full resize-none rounded-xl border border-white/10 bg-bg-input px-5 py-4 font-sans text-text-main placeholder:text-white/20 transition-colors duration-200 focus:border-gold/50"
         />
       </div>
 
-      {/* Question 3 */}
+      {/* Question 3: Recommend score */}
       <div>
-        <p className="mb-2 font-serif text-lg text-white/90">
+        <p className="mb-2 font-jp text-lg text-text-main">
           友達にこの体験を勧めたいですか？
         </p>
-        <p className="mb-4 text-sm text-white/40">
+        <div className="gold-line mb-3" />
+        <p className="mb-5 font-sans text-sm text-text-sub italic">
           Would you recommend this experience to a friend?
         </p>
-        <div className="flex gap-2">
+        <div className="flex justify-center gap-3">
           {[1, 2, 3, 4, 5].map((score) => (
-            <button
+            <motion.button
               key={score}
+              whileTap={{ scale: 0.9 }}
               onClick={() => setRecommendScore(score)}
-              className={`flex h-12 w-12 items-center justify-center rounded-lg border transition-all ${
-                recommendScore === score
-                  ? 'border-gold bg-gold/10 text-gold'
-                  : 'border-white/10 text-white/60 hover:border-gold/30'
+              className={`flex h-14 w-14 items-center justify-center rounded-full border-2 font-sans text-lg font-medium transition-all duration-200 ${
+                recommendScore !== null && score <= recommendScore
+                  ? 'border-gold bg-gold/20 text-gold'
+                  : 'border-white/10 text-text-sub hover:border-gold/30'
               }`}
             >
               {score}
-            </button>
+            </motion.button>
           ))}
         </div>
       </div>

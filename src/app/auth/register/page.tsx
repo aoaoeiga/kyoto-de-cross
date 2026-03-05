@@ -27,7 +27,6 @@ export default function RegisterPage() {
         return;
       }
 
-      // Create user record
       const { data: existingUser } = await supabase
         .from('users')
         .select('id')
@@ -57,32 +56,33 @@ export default function RegisterPage() {
   }
 
   return (
-    <div className="flex min-h-screen flex-col items-center justify-center px-6">
+    <div className="flex min-h-screen min-h-dvh flex-col items-center justify-center px-6">
       <Header showBack backHref="/auth/login" />
 
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.8 }}
         className="w-full max-w-sm"
       >
-        <h1 className="mb-2 text-center font-serif text-2xl text-gold">
+        <h1 className="mb-2 text-center font-display text-2xl font-bold text-gold">
           はじめまして
         </h1>
-        <p className="mb-8 text-center text-sm text-white/40">
+        <p className="mb-10 text-center font-sans text-sm text-text-sub italic">
           Nice to meet you. What should we call you?
         </p>
 
-        <form onSubmit={handleRegister} className="space-y-4">
+        <form onSubmit={handleRegister} className="space-y-5">
           <input
             type="text"
             value={name}
             onChange={(e) => setName(e.target.value)}
             placeholder="あなたの名前 / Your name"
             required
-            className="w-full rounded-lg border border-white/10 bg-navy-light px-4 py-3 text-white/90 placeholder:text-white/20 focus:border-gold/50 focus:outline-none"
+            className="w-full rounded-xl border border-white/10 bg-bg-input px-5 py-4 font-sans text-text-main placeholder:text-white/20 transition-colors duration-200 focus:border-gold/50"
           />
 
-          {error && <p className="text-sm text-red-400">{error}</p>}
+          {error && <p className="font-sans text-sm text-error">{error}</p>}
 
           <Button
             type="submit"

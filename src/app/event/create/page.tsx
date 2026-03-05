@@ -50,36 +50,37 @@ export default function CreateEventPage() {
     const joinUrl = `${typeof window !== 'undefined' ? window.location.origin : ''}/event/join/${createdEvent.qr_code}`;
 
     return (
-      <div className="flex min-h-screen flex-col items-center justify-center px-6">
+      <div className="flex min-h-screen min-h-dvh flex-col items-center justify-center px-6">
         <Header showBack />
 
         <motion.div
-          initial={{ opacity: 0, scale: 0.9 }}
+          initial={{ opacity: 0, scale: 0.95 }}
           animate={{ opacity: 1, scale: 1 }}
+          transition={{ duration: 0.8 }}
           className="text-center"
         >
-          <h2 className="mb-2 font-serif text-xl text-gold">
+          <h2 className="mb-2 font-display text-xl font-bold text-gold">
             イベントが作成されました
           </h2>
-          <p className="mb-8 text-sm text-white/40">Event created!</p>
+          <p className="mb-8 font-sans text-sm text-text-sub italic">
+            Event created!
+          </p>
 
           {/* QR Code */}
-          <div className="mx-auto mb-6 inline-block rounded-2xl border border-gold/30 bg-white p-4">
+          <div className="mx-auto mb-6 inline-block rounded-2xl border border-gold/30 bg-white p-5 shadow-gold-glow">
             <QRCode value={joinUrl} size={200} />
           </div>
 
-          <p className="mb-2 text-sm text-white/60">
+          <p className="mb-2 font-sans text-sm text-text-sub">
             参加コード / Join Code
           </p>
-          <p className="mb-8 font-mono text-3xl tracking-widest text-gold">
+          <p className="mb-8 font-sans text-3xl font-bold tracking-[0.3em] text-gold">
             {createdEvent.qr_code}
           </p>
 
           <div className="flex flex-col gap-3">
             <Button
-              onClick={() =>
-                router.push(`/event/${createdEvent.id}/lobby`)
-              }
+              onClick={() => router.push(`/event/${createdEvent.id}/lobby`)}
               size="lg"
             >
               ロビーへ / Go to Lobby
@@ -99,23 +100,24 @@ export default function CreateEventPage() {
   }
 
   return (
-    <div className="flex min-h-screen flex-col items-center justify-center px-6">
+    <div className="flex min-h-screen min-h-dvh flex-col items-center justify-center px-6">
       <Header showBack />
 
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.8 }}
         className="w-full max-w-sm"
       >
-        <h1 className="mb-2 text-center font-serif text-2xl text-gold">
+        <h1 className="mb-2 text-center font-display text-2xl font-bold text-gold">
           イベントを作成
         </h1>
-        <p className="mb-8 text-center text-sm text-white/40">
+        <p className="mb-10 text-center font-sans text-sm text-text-sub italic">
           Create a new event
         </p>
 
-        <div className="mb-6">
-          <label className="mb-2 block text-sm text-white/50">
+        <div className="mb-8">
+          <label className="mb-2 block font-sans text-sm text-text-sub">
             場所 / Location (optional)
           </label>
           <input
@@ -123,7 +125,7 @@ export default function CreateEventPage() {
             value={location}
             onChange={(e) => setLocation(e.target.value)}
             placeholder="例: 京都市左京区..."
-            className="w-full rounded-lg border border-white/10 bg-navy-light px-4 py-3 text-white/90 placeholder:text-white/20 focus:border-gold/50 focus:outline-none"
+            className="w-full rounded-xl border border-white/10 bg-bg-input px-5 py-4 font-sans text-text-main placeholder:text-white/20 transition-colors duration-200 focus:border-gold/50"
           />
         </div>
 

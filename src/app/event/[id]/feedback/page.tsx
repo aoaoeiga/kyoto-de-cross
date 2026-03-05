@@ -5,7 +5,6 @@ import { motion } from 'framer-motion';
 import { useRouter, useParams } from 'next/navigation';
 import { supabase } from '@/lib/supabase';
 import FeedbackForm from '@/components/ui/FeedbackForm';
-import Header from '@/components/layout/Header';
 
 export default function FeedbackPage() {
   const router = useRouter();
@@ -48,42 +47,54 @@ export default function FeedbackPage() {
 
   if (submitted) {
     return (
-      <div className="flex min-h-screen flex-col items-center justify-center px-6">
+      <div className="flex min-h-screen min-h-dvh flex-col items-center justify-center px-6 bg-bg">
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 1.5, ease: 'easeOut' }}
           className="text-center"
         >
-          <h2 className="mb-4 font-serif text-2xl text-gold">
-            ありがとうございました
+          <h2 className="mb-6 font-display text-4xl font-bold text-gold">
+            Thank you.
           </h2>
-          <p className="mb-2 text-white/60">Thank you for your feedback.</p>
-          <p className="mb-8 text-sm text-white/30">
-            また会いましょう。/ See you again.
+          <div className="gold-line mx-auto mb-6" />
+          <p className="mb-2 font-narrative text-xl text-text-main">
+            また会いましょう。
           </p>
-          <button
+          <p className="mb-12 font-sans text-sm text-text-sub italic">
+            See you again.
+          </p>
+          <motion.button
+            whileTap={{ scale: 0.97 }}
             onClick={() => router.push('/')}
-            className="text-sm text-gold/50 hover:text-gold"
+            className="font-sans text-sm text-gold/50 transition-colors hover:text-gold"
           >
             ホームに戻る / Back to Home
-          </button>
+          </motion.button>
         </motion.div>
       </div>
     );
   }
 
   return (
-    <div className="flex min-h-screen flex-col justify-center py-12">
-      <Header showBack backHref={`/event/${eventId}/play`} />
+    <div className="flex min-h-screen min-h-dvh flex-col justify-center bg-bg py-12">
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.8 }}
+      >
+        <div className="mb-10 text-center">
+          <h1 className="mb-2 font-display text-xl font-bold text-gold">
+            今日の体験について教えてください
+          </h1>
+          <div className="gold-line mx-auto my-4" />
+          <p className="font-sans text-sm text-text-sub italic">
+            Tell us about tonight
+          </p>
+        </div>
 
-      <div className="mb-8 text-center">
-        <h1 className="mb-2 font-serif text-xl text-gold">
-          今日の体験について教えてください
-        </h1>
-        <p className="text-sm text-white/40">Tell us about tonight</p>
-      </div>
-
-      <FeedbackForm onSubmit={handleSubmit} isSubmitting={submitting} />
+        <FeedbackForm onSubmit={handleSubmit} isSubmitting={submitting} />
+      </motion.div>
     </div>
   );
 }

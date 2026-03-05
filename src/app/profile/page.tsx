@@ -7,7 +7,6 @@ import { supabase } from '@/lib/supabase';
 import { useProfile } from '@/hooks/useProfile';
 import { PROFILE_QUESTIONS } from '@/lib/profile-questions';
 import QuizInput from '@/components/ui/QuizInput';
-import Header from '@/components/layout/Header';
 
 export default function ProfilePage() {
   const router = useRouter();
@@ -45,7 +44,6 @@ export default function ProfilePage() {
     if (currentQuestion < PROFILE_QUESTIONS.length - 1) {
       setCurrentQuestion((prev) => prev + 1);
     } else {
-      // Save profile and redirect
       await saveProfile(answers);
       router.push('/event/create');
     }
@@ -60,8 +58,7 @@ export default function ProfilePage() {
   if (!question) return null;
 
   return (
-    <>
-      <Header showBack backHref="/" />
+    <div className="relative min-h-screen min-h-dvh bg-bg">
       <AnimatePresence mode="wait">
         <QuizInput
           key={question.key}
@@ -82,6 +79,6 @@ export default function ProfilePage() {
           totalSteps={PROFILE_QUESTIONS.length}
         />
       </AnimatePresence>
-    </>
+    </div>
   );
 }

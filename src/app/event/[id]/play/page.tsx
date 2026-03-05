@@ -10,8 +10,11 @@ import NarrativeScreen from '@/components/ui/NarrativeScreen';
 import PhaseIntro from '@/components/ui/PhaseIntro';
 import Card from '@/components/ui/Card';
 import FeedbackForm from '@/components/ui/FeedbackForm';
-import Button from '@/components/ui/Button';
 import ProgressDots from '@/components/layout/ProgressDots';
+
+// Card counts per phase for position tracking
+const PHASE_CARD_COUNTS: Record<number, number> = { 1: 5, 2: 4, 3: 3 };
+const PHASE_CARD_STARTS: Record<number, number> = { 1: 1, 2: 6, 3: 10 };
 
 export default function PlayPage() {
   const router = useRouter();
@@ -24,7 +27,6 @@ export default function PlayPage() {
 
   useEffect(() => {
     async function loadCards() {
-      // Fetch generated cards for this event
       const { data: cards } = await supabase
         .from('generated_cards')
         .select('*')
@@ -52,12 +54,6 @@ export default function PlayPage() {
   function handleNext() {
     if (currentScreen < screens.length - 1) {
       setCurrentScreen((prev) => prev + 1);
-    }
-  }
-
-  function handlePrev() {
-    if (currentScreen > 0) {
-      setCurrentScreen((prev) => prev - 1);
     }
   }
 
@@ -93,16 +89,20 @@ export default function PlayPage() {
 
   if (loading) {
     return (
-      <div className="flex min-h-screen items-center justify-center">
+      <div className="flex min-h-screen min-h-dvh items-center justify-center bg-bg">
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
+          transition={{ duration: 1 }}
           className="text-center"
         >
-          <div className="mb-4 font-serif text-xl text-gold">
+          <h1 className="mb-4 font-display text-2xl font-bold text-gold">
             Kyoto de Cross
-          </div>
-          <div className="text-sm text-white/30">Loading experience...</div>
+          </h1>
+          <div className="mx-auto mb-4 h-6 w-6 animate-spin rounded-full border-2 border-gold/20 border-t-gold" />
+          <p className="font-sans text-sm text-text-sub">
+            Loading experience...
+          </p>
         </motion.div>
       </div>
     );
@@ -110,19 +110,30 @@ export default function PlayPage() {
 
   if (!screen) return null;
 
+  // Check if current screen is the "Thank you" (last narrative)
+  const isThankYou = screen.type === 'narrative' && screen.title === 'Thank you.';
+
+  // Get card position info
+  const getCardPosition = (cardNum: number, phase: number) => {
+    const start = PHASE_CARD_STARTS[phase] || 1;
+    return {
+      positionInPhase: cardNum - start + 1,
+      totalInPhase: PHASE_CARD_COUNTS[phase] || 1,
+    };
+  };
+
   return (
-    <div className="flex min-h-screen flex-col">
-      {/* Progress dots at top */}
-      <div className="fixed top-0 left-0 right-0 z-50 bg-navy/90 py-3 backdrop-blur-sm">
+    <div className="flex min-h-screen min-h-dvh flex-col bg-bg">
+      {/* Progress dots - minimal at top */}
+      <div className="fixed top-0 left-0 right-0 z-50 bg-bg/80 py-3 backdrop-blur-md">
         <ProgressDots
           total={screens.length}
           current={currentScreen}
-          phase={screen.phase}
         />
       </div>
 
-      {/* Main content */}
-      <div className="flex flex-1 flex-col pt-12 pb-24">
+      {/* Main content - full screen immersion */}
+      <div className="flex flex-1 flex-col pt-10 pb-20">
         <AnimatePresence mode="wait">
           <motion.div
             key={currentScreen}
@@ -132,14 +143,47 @@ export default function PlayPage() {
             transition={{ duration: 0.5 }}
             className="flex flex-1 flex-col"
           >
-            {/* Narrative screens (welcome, rules, phase intros, closing) */}
+            {/* Phase Intro screens */}
             {screen.type === 'narrative' && screen.phase && screen.title?.startsWith('Phase') ? (
               <PhaseIntro
                 phase={screen.phase}
                 content={screen.content}
                 content_en={screen.content_en}
               />
+            ) : screen.type === 'narrative' && isThankYou ? (
+              /* Thank You screen - special design */
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ duration: 1.5, ease: 'easeOut' }}
+                className="flex min-h-[80vh] flex-col items-center justify-center px-8 text-center"
+              >
+                <motion.h1
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.3, duration: 1 }}
+                  className="mb-6 font-display text-4xl font-bold text-gold md:text-5xl"
+                >
+                  Thank you.
+                </motion.h1>
+                <motion.div
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ delay: 0.8, duration: 1 }}
+                >
+                  <div className="gold-line mx-auto mb-6" />
+                  <p className="font-narrative text-xl text-text-main">
+                    {screen.content}
+                  </p>
+                  {screen.content_en && (
+                    <p className="mt-3 font-sans text-sm text-text-sub italic">
+                      {screen.content_en}
+                    </p>
+                  )}
+                </motion.div>
+              </motion.div>
             ) : screen.type === 'narrative' ? (
+              /* Regular narrative screens */
               <NarrativeScreen
                 title={screen.title}
                 content={screen.content}
@@ -158,17 +202,20 @@ export default function PlayPage() {
                   phase={screen.phase || 1}
                   turn_order={screen.turn_order}
                   subtitle={screen.subtitle}
+                  isFinalCard={screen.card_number === 12}
+                  {...(screen.phase ? getCardPosition(screen.card_number || 0, screen.phase) : {})}
                 />
               </div>
             )}
 
             {/* Feedback screen */}
             {screen.type === 'feedback' && !feedbackSubmitted && (
-              <div className="flex flex-1 flex-col justify-center">
-                <h2 className="mb-2 text-center font-serif text-xl text-gold">
+              <div className="flex flex-1 flex-col justify-center px-2">
+                <h2 className="mb-2 text-center font-display text-xl font-bold text-gold">
                   {screen.title}
                 </h2>
-                <p className="mb-8 text-center text-sm text-white/40">
+                <div className="gold-line mx-auto my-3" />
+                <p className="mb-8 text-center font-sans text-sm text-text-sub italic">
                   {screen.content_en}
                 </p>
                 <FeedbackForm onSubmit={handleFeedbackSubmit} />
@@ -177,53 +224,48 @@ export default function PlayPage() {
 
             {screen.type === 'feedback' && feedbackSubmitted && (
               <div className="flex flex-1 items-center justify-center">
-                <div className="text-center">
-                  <p className="font-serif text-xl text-gold">
+                <motion.div
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ duration: 0.8 }}
+                  className="text-center"
+                >
+                  <p className="font-display text-xl font-bold text-gold">
                     ありがとうございます
                   </p>
-                  <p className="mt-2 text-sm text-white/40">
+                  <div className="gold-line mx-auto my-4" />
+                  <p className="font-sans text-sm text-text-sub italic">
                     Thank you for your feedback
                   </p>
-                </div>
+                </motion.div>
               </div>
             )}
           </motion.div>
         </AnimatePresence>
       </div>
 
-      {/* Navigation */}
-      <div className="fixed bottom-0 left-0 right-0 flex items-center justify-between bg-navy/90 px-6 py-4 backdrop-blur-sm">
-        <button
-          onClick={handlePrev}
-          disabled={currentScreen === 0}
-          className={`text-sm ${
-            currentScreen === 0 ? 'text-white/10' : 'text-gold/50 hover:text-gold'
-          }`}
-        >
-          ← 前へ
-        </button>
-
-        {screen.type === 'feedback' && !feedbackSubmitted ? (
-          <span className="text-xs text-white/20">
-            {currentScreen + 1} / {screens.length}
-          </span>
-        ) : currentScreen < screens.length - 1 ? (
-          <Button onClick={handleNext} size="md">
-            次へ / Next →
-          </Button>
-        ) : (
-          <Button
-            onClick={() => router.push(`/event/${eventId}/feedback`)}
-            size="md"
-          >
-            終了 / Finish
-          </Button>
-        )}
-
-        <span className="text-xs text-white/20">
-          {currentScreen + 1} / {screens.length}
-        </span>
-      </div>
+      {/* Bottom navigation - minimal, semi-transparent */}
+      {screen.type !== 'feedback' || feedbackSubmitted ? (
+        <div className="fixed bottom-0 left-0 right-0 flex items-center justify-center bg-bg/60 px-6 py-5 backdrop-blur-md">
+          {currentScreen < screens.length - 1 ? (
+            <motion.button
+              whileTap={{ scale: 0.97 }}
+              onClick={handleNext}
+              className="rounded-lg border border-gold/30 bg-gold/5 px-10 py-3 font-sans text-sm text-gold transition-all duration-200 hover:border-gold/50 hover:bg-gold/10"
+            >
+              Next &rarr;
+            </motion.button>
+          ) : (
+            <motion.button
+              whileTap={{ scale: 0.97 }}
+              onClick={() => router.push(`/event/${eventId}/feedback`)}
+              className="rounded-lg bg-gold px-10 py-3 font-sans text-sm font-medium text-bg transition-all duration-200 hover:bg-gold-hover"
+            >
+              終了 / Finish
+            </motion.button>
+          )}
+        </div>
+      ) : null}
     </div>
   );
 }

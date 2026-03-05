@@ -37,7 +37,6 @@ export default function LobbyPage() {
     if (event) checkHost();
   }, [event]);
 
-  // Poll for new participants
   useEffect(() => {
     const interval = setInterval(refetch, 5000);
     return () => clearInterval(interval);
@@ -46,7 +45,6 @@ export default function LobbyPage() {
   async function handleStartEvent() {
     setGenerating(true);
     try {
-      // Generate cards via API
       const response = await fetch('/api/generate-cards', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -65,36 +63,44 @@ export default function LobbyPage() {
 
   if (loading) {
     return (
-      <div className="flex min-h-screen items-center justify-center">
-        <div className="text-gold/50">Loading...</div>
+      <div className="flex min-h-screen min-h-dvh items-center justify-center">
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          className="text-center"
+        >
+          <div className="mx-auto mb-4 h-8 w-8 animate-spin rounded-full border-2 border-gold/20 border-t-gold" />
+          <p className="font-sans text-sm text-text-sub">Loading...</p>
+        </motion.div>
       </div>
     );
   }
 
   return (
-    <div className="flex min-h-screen flex-col px-6 pt-20 pb-8">
+    <div className="flex min-h-screen min-h-dvh flex-col px-6 pt-20 pb-8">
       <Header showBack backHref="/event/create" />
 
       <motion.div
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
+        transition={{ duration: 0.8 }}
         className="flex-1"
       >
         {/* Event info */}
         <div className="mb-8 text-center">
-          <h1 className="mb-1 font-serif text-xl text-gold">
+          <h1 className="mb-1 font-display text-xl font-bold text-gold">
             {event?.title || 'Kyoto de Cross'}
           </h1>
           {event?.location && (
-            <p className="text-sm text-white/40">{event.location}</p>
+            <p className="font-sans text-sm text-text-sub">{event.location}</p>
           )}
         </div>
 
-        {/* QR Code display */}
+        {/* Join code */}
         {event?.qr_code && (
           <div className="mb-8 text-center">
-            <p className="mb-2 text-xs text-white/30">Join Code</p>
-            <p className="font-mono text-2xl tracking-widest text-gold">
+            <p className="mb-2 font-sans text-xs text-text-sub">Join Code</p>
+            <p className="font-sans text-2xl font-bold tracking-[0.3em] text-gold">
               {event.qr_code}
             </p>
           </div>
@@ -102,7 +108,7 @@ export default function LobbyPage() {
 
         {/* Participants */}
         <div className="mb-8">
-          <p className="mb-4 text-center text-sm text-white/50">
+          <p className="mb-4 text-center font-sans text-sm text-text-sub">
             参加者 / Participants ({participants.length})
           </p>
           <div className="mx-auto max-w-sm space-y-2">
@@ -112,19 +118,20 @@ export default function LobbyPage() {
                 initial={{ opacity: 0, x: -20 }}
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ delay: i * 0.1 }}
-                className="flex items-center gap-3 rounded-lg border border-white/5 bg-navy-light px-4 py-3"
+                className="flex items-center gap-3 rounded-xl border border-white/5 bg-bg-card px-4 py-3"
               >
-                <div className="flex h-8 w-8 items-center justify-center rounded-full bg-gold/10 text-sm text-gold">
-                  {(p as { user?: { name?: string } }).user?.name?.[0] || '?'}
+                {/* Geometric initial avatar */}
+                <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-gold font-sans text-sm font-bold text-bg">
+                  {(p as { user?: { name?: string } }).user?.name?.[0]?.toUpperCase() || '?'}
                 </div>
-                <span className="text-white/70">
+                <span className="font-sans text-text-main">
                   {(p as { user?: { name?: string } }).user?.name || 'Guest'}
                 </span>
               </motion.div>
             ))}
 
             {participants.length === 0 && (
-              <p className="text-center text-sm text-white/20">
+              <p className="text-center font-sans text-sm text-text-sub/50">
                 まだ参加者がいません / No participants yet
               </p>
             )}
@@ -141,11 +148,11 @@ export default function LobbyPage() {
               size="lg"
             >
               {generating
-                ? 'カードを生成中... / Generating Cards...'
-                : 'カードを生成して開始 / Generate Cards & Start'}
+                ? 'カードを生成中... / Generating...'
+                : 'カードを生成して開始 / Generate & Start'}
             </Button>
             {participants.length === 0 && (
-              <p className="mt-2 text-center text-xs text-white/20">
+              <p className="mt-3 text-center font-sans text-xs text-text-sub/50">
                 少なくとも1人の参加者が必要です
               </p>
             )}
@@ -154,10 +161,11 @@ export default function LobbyPage() {
 
         {!isHost && (
           <div className="text-center">
-            <p className="text-sm text-white/40">
+            <div className="mx-auto mb-3 h-6 w-6 animate-spin rounded-full border-2 border-gold/20 border-t-gold" />
+            <p className="font-sans text-sm text-text-sub">
               ホストの開始を待っています...
             </p>
-            <p className="text-xs text-white/20">
+            <p className="mt-1 font-sans text-xs text-text-sub/60 italic">
               Waiting for host to start...
             </p>
           </div>
