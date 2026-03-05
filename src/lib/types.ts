@@ -9,6 +9,7 @@ export type Profile = {
   id: string;
   user_id: string;
   mbti?: string;
+  one_word?: string;
   indoor_outdoor?: 'indoor' | 'outdoor' | 'both';
   morning_night?: 'morning' | 'night' | 'both';
   current_hobby?: string;
@@ -77,7 +78,7 @@ export type CardGenerationInput = {
   participants: {
     name: string;
     profile: {
-      mbti?: string;
+      one_word?: string;
       indoor_outdoor?: string;
       morning_night?: string;
       current_hobby?: string;

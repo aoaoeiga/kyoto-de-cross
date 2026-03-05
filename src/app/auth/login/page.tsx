@@ -2,13 +2,16 @@
 
 import { useState } from 'react';
 import { motion } from 'framer-motion';
+import { useRouter } from 'next/navigation';
+import Link from 'next/link';
 import { supabase } from '@/lib/supabase';
 import Button from '@/components/ui/Button';
 import Header from '@/components/layout/Header';
 
 export default function LoginPage() {
+  const router = useRouter();
   const [email, setEmail] = useState('');
-  const [sent, setSent] = useState(false);
+  const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
 
@@ -17,50 +20,17 @@ export default function LoginPage() {
     setLoading(true);
     setError('');
 
-    const { error } = await supabase.auth.signInWithOtp({
+    const { error } = await supabase.auth.signInWithPassword({
       email,
-      options: {
-        emailRedirectTo: `${window.location.origin}/api/auth/callback`,
-      },
+      password,
     });
 
     if (error) {
       setError(error.message);
+      setLoading(false);
     } else {
-      setSent(true);
+      router.push('/dashboard');
     }
-    setLoading(false);
-  }
-
-  if (sent) {
-    return (
-      <div className="flex min-h-screen min-h-dvh flex-col items-center justify-center px-6">
-        <Header showBack />
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8 }}
-          className="text-center"
-        >
-          <div className="mx-auto mb-8 flex h-20 w-20 items-center justify-center rounded-full border border-gold/30">
-            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" className="text-gold">
-              <rect x="2" y="4" width="20" height="16" rx="2" />
-              <path d="M22 7l-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7" />
-            </svg>
-          </div>
-          <h2 className="mb-3 font-display text-xl font-bold text-gold">
-            メールを送信しました
-          </h2>
-          <p className="mb-2 font-sans text-sm text-text-main">
-            Magic link sent to {email}
-          </p>
-          <div className="gold-line mx-auto my-4" />
-          <p className="font-sans text-xs text-text-sub">
-            メールのリンクをクリックしてログインしてください。
-          </p>
-        </motion.div>
-      </div>
-    );
   }
 
   return (
@@ -81,16 +51,23 @@ export default function LoginPage() {
         </p>
 
         <form onSubmit={handleLogin} className="space-y-5">
-          <div className="relative">
-            <input
-              type="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              placeholder="email@example.com"
-              required
-              className="w-full rounded-xl border border-white/10 bg-bg-input px-5 py-4 font-sans text-text-main placeholder:text-white/20 transition-colors duration-200 focus:border-gold/50"
-            />
-          </div>
+          <input
+            type="email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            placeholder="email@example.com"
+            required
+            className="w-full rounded-xl border border-white/10 bg-bg-input px-5 py-4 font-sans text-text-main placeholder:text-white/20 transition-colors duration-200 focus:border-gold/50"
+          />
+
+          <input
+            type="password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            placeholder="パスワード / Password"
+            required
+            className="w-full rounded-xl border border-white/10 bg-bg-input px-5 py-4 font-sans text-text-main placeholder:text-white/20 transition-colors duration-200 focus:border-gold/50"
+          />
 
           {error && (
             <p className="font-sans text-sm text-error">{error}</p>
@@ -98,20 +75,20 @@ export default function LoginPage() {
 
           <Button
             type="submit"
-            disabled={loading || !email}
+            disabled={loading || !email || !password}
             className="w-full"
             size="lg"
           >
-            {loading ? '送信中...' : 'マジックリンクを送信'}
+            {loading ? 'ログイン中...' : 'ログイン / Login'}
           </Button>
         </form>
 
         <div className="gold-line mx-auto mt-8 mb-4" />
         <p className="text-center font-sans text-xs text-text-sub">
-          初めての方は自動的にアカウントが作成されます。
-        </p>
-        <p className="mt-1 text-center font-sans text-xs text-text-sub/60 italic">
-          New users will be registered automatically.
+          アカウントをお持ちでない方は
+          <Link href="/auth/register" className="ml-1 text-gold underline underline-offset-2">
+            新規登録
+          </Link>
         </p>
       </motion.div>
     </div>

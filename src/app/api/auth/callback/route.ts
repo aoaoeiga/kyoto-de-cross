@@ -15,5 +15,5 @@ export async function GET(request: NextRequest) {
   }
 
   // Check if user has a profile, redirect accordingly
-  return NextResponse.redirect(new URL('/auth/register', requestUrl.origin));
+  return NextResponse.redirect(new URL('/dashboard', requestUrl.origin));
 }

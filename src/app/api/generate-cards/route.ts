@@ -48,7 +48,7 @@ export async function POST(request: NextRequest) {
       return {
         name: (user?.name as string) || 'Guest',
         profile: {
-          mbti: profile.mbti as string | undefined,
+          one_word: profile.one_word as string | undefined,
           indoor_outdoor: profile.indoor_outdoor as string | undefined,
           morning_night: profile.morning_night as string | undefined,
           current_hobby: profile.current_hobby as string | undefined,
