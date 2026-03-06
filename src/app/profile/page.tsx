@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { Suspense, useState, useEffect } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
 import { supabase } from '@/lib/supabase';
@@ -11,6 +11,20 @@ import Button from '@/components/ui/Button';
 import Header from '@/components/layout/Header';
 
 export default function ProfilePage() {
+  return (
+    <Suspense
+      fallback={
+        <div className="flex min-h-screen min-h-dvh items-center justify-center">
+          <div className="h-8 w-8 animate-spin rounded-full border-2 border-gold/20 border-t-gold" />
+        </div>
+      }
+    >
+      <ProfileContent />
+    </Suspense>
+  );
+}
+
+function ProfileContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const editMode = searchParams.get('edit') === 'true';
