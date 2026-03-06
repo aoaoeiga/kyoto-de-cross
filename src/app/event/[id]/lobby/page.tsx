@@ -16,6 +16,7 @@ export default function LobbyPage() {
     useEvent(eventId);
   const [isHost, setIsHost] = useState(false);
   const [generating, setGenerating] = useState(false);
+  const [generateError, setGenerateError] = useState('');
 
   useEffect(() => {
     async function checkHost() {
@@ -44,6 +45,7 @@ export default function LobbyPage() {
 
   async function handleStartEvent() {
     setGenerating(true);
+    setGenerateError('');
     try {
       const response = await fetch('/api/generate-cards', {
         method: 'POST',
@@ -51,12 +53,16 @@ export default function LobbyPage() {
         body: JSON.stringify({ event_id: eventId }),
       });
 
-      if (!response.ok) throw new Error('Failed to generate cards');
+      if (!response.ok) {
+        const data = await response.json().catch(() => null);
+        throw new Error(data?.error || 'カードの生成に失敗しました');
+      }
 
       await updateEventStatus('active');
       router.push(`/event/${eventId}/play`);
     } catch (err) {
-      console.error('Failed to start event:', err);
+      const message = err instanceof Error ? err.message : 'カードの生成に失敗しました';
+      setGenerateError(message);
       setGenerating(false);
     }
   }
@@ -155,6 +161,16 @@ export default function LobbyPage() {
               <p className="mt-3 text-center font-sans text-xs text-text-sub/50">
                 少なくとも1人の参加者が必要です
               </p>
+            )}
+            {generateError && (
+              <div className="mt-4 rounded-xl border border-error/20 bg-error/5 px-4 py-3">
+                <p className="font-sans text-sm text-error">
+                  {generateError}
+                </p>
+                <p className="mt-1 font-sans text-xs text-error/60">
+                  もう一度お試しください / Please try again
+                </p>
+              </div>
             )}
           </div>
         )}

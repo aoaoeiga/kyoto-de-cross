@@ -5,6 +5,7 @@ import { motion } from 'framer-motion';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { supabase } from '@/lib/supabase';
+import { useCreateEvent } from '@/hooks/useEvent';
 import Button from '@/components/ui/Button';
 import Header from '@/components/layout/Header';
 
@@ -18,9 +19,14 @@ type UserEvent = {
 
 export default function DashboardPage() {
   const router = useRouter();
+  const { joinEvent } = useCreateEvent();
   const [userName, setUserName] = useState('');
+  const [userId, setUserId] = useState('');
   const [events, setEvents] = useState<UserEvent[]>([]);
   const [loading, setLoading] = useState(true);
+  const [joinCode, setJoinCode] = useState('');
+  const [joinLoading, setJoinLoading] = useState(false);
+  const [joinError, setJoinError] = useState('');
 
   useEffect(() => {
     async function loadDashboard() {
@@ -42,6 +48,7 @@ export default function DashboardPage() {
       }
 
       setUserName(userData.name);
+      setUserId(userData.id);
 
       // Fetch events the user participated in
       const { data: participations } = await supabase
@@ -141,6 +148,48 @@ export default function DashboardPage() {
               イベントを作成 / Create Event
             </Button>
           </Link>
+        </div>
+
+        {/* Join event */}
+        <div className="mb-10">
+          <h2 className="mb-3 font-display text-lg font-bold text-text-main">
+            イベントに参加 / Join Event
+          </h2>
+          <form
+            onSubmit={async (e) => {
+              e.preventDefault();
+              if (!joinCode.trim() || !userId) return;
+              setJoinLoading(true);
+              setJoinError('');
+              try {
+                const event = await joinEvent(joinCode.trim().toUpperCase(), userId);
+                router.push(`/event/${event.id}/lobby`);
+              } catch (err) {
+                setJoinError(err instanceof Error ? err.message : 'イベントが見つかりません');
+              } finally {
+                setJoinLoading(false);
+              }
+            }}
+            className="flex gap-2"
+          >
+            <input
+              type="text"
+              value={joinCode}
+              onChange={(e) => setJoinCode(e.target.value)}
+              placeholder="イベントコード / Event Code"
+              className="flex-1 rounded-xl border border-white/10 bg-bg-input px-4 py-3 font-mono text-sm uppercase tracking-widest text-text-main placeholder:text-white/20 transition-colors duration-200 focus:border-gold/50"
+            />
+            <Button
+              type="submit"
+              disabled={joinLoading || !joinCode.trim()}
+              size="lg"
+            >
+              {joinLoading ? '...' : '参加'}
+            </Button>
+          </form>
+          {joinError && (
+            <p className="mt-2 font-sans text-sm text-error">{joinError}</p>
+          )}
         </div>
 
         {/* Events list */}
