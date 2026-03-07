@@ -150,8 +150,8 @@ Generate 11 conversation cards for this group. Return ONLY the JSON array, no ot
     }
 
     return NextResponse.json({ cards: cardsToInsert });
-  } catch (error: any) {
-    const msg = error?.message || String(error);
+  } catch (error: unknown) {
+    const msg = (error as Error)?.message || String(error);
     console.error('GENERATE ERROR:', msg);
     return new Response(JSON.stringify({ error: msg }), {
       status: 500,
