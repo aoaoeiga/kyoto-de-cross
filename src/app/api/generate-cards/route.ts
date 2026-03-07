@@ -19,6 +19,7 @@ function getClients() {
 export const dynamic = 'force-dynamic';
 
 export async function POST(request: NextRequest) {
+  console.log('API KEY exists:', !!process.env.ANTHROPIC_API_KEY);
   const { anthropic, supabase } = getClients();
 
   try {
@@ -149,16 +150,12 @@ Generate 11 conversation cards for this group. Return ONLY the JSON array, no ot
     }
 
     return NextResponse.json({ cards: cardsToInsert });
-  } catch (error: unknown) {
-    console.error('Generate cards error:', error);
-    const err = error as Record<string, unknown>;
-    return NextResponse.json(
-      {
-        error: 'Failed to generate cards',
-        details: err?.message || String(error),
-        stack: err?.stack,
-      },
-      { status: 500 }
-    );
+  } catch (error: any) {
+    const msg = error?.message || String(error);
+    console.error('GENERATE ERROR:', msg);
+    return new Response(JSON.stringify({ error: msg }), {
+      status: 500,
+      headers: { 'Content-Type': 'application/json' }
+    });
   }
 }
