@@ -4,7 +4,6 @@ export async function POST(request: Request) {
   try {
     const body = await request.json();
     const hasKey = !!process.env.ANTHROPIC_API_KEY;
-
     return NextResponse.json({
       message: 'API is working',
       hasApiKey: hasKey,
