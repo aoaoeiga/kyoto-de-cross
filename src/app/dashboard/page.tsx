@@ -75,7 +75,7 @@ export default function DashboardPage() {
 
       if (participations) {
         const participatedIds = participations
-          .map((p) => p.event_id)
+          .map((p: { event_id: string }) => p.event_id)
           .filter((id) => !allEventIds.has(id));
 
         if (participatedIds.length > 0) {
