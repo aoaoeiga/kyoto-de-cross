@@ -87,7 +87,7 @@ export async function POST(request: Request) {
       user: { id: string; name: string; profiles?: Array<Record<string, unknown>> } | null;
     };
 
-    const participantList = (participants ?? []) as ParticipantRow[];
+    const participantList = (participants ?? []) as unknown as ParticipantRow[];
 
     const input: CardGenerationInput = {
       participants: participantList
