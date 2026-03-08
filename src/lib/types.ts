@@ -1,3 +1,7 @@
+/**
+ * アプリケーション全体で使用する型定義
+ */
+
 export type User = {
   id: string;
   auth_id: string;

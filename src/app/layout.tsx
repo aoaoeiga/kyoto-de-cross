@@ -1,3 +1,7 @@
+/**
+ * ルートレイアウト
+ * フォント・メタデータ・グローバルスタイルを設定
+ */
 import type { Metadata } from 'next';
 import './globals.css';
 

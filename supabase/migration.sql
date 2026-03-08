@@ -15,6 +15,7 @@ CREATE TABLE IF NOT EXISTS profiles (
   user_id UUID REFERENCES users(id) ON DELETE CASCADE,
   -- Layer 1 (always shared)
   mbti TEXT,
+  one_word TEXT, -- 自分を一言で表現
   indoor_outdoor TEXT, -- 'indoor' | 'outdoor' | 'both'
   morning_night TEXT, -- 'morning' | 'night' | 'both'
   current_hobby TEXT,

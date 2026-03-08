@@ -1,3 +1,7 @@
+/**
+ * 体験フローのスクリーン構成
+ * ナラティブ・カード・フィードバックの順序を定義
+ */
 import { Screen, GeneratedCardResponse } from './types';
 
 const TURN_ORDERS = {

@@ -1,5 +1,6 @@
 'use client';
 
+/** ダッシュボード: イベント一覧・作成・参加 */
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { useRouter } from 'next/navigation';

@@ -1,3 +1,7 @@
+/**
+ * Claude API によるカード生成（クライアント用ラッパー）
+ * 実際の生成は /api/generate-cards で実行
+ */
 import { CardGenerationInput, GeneratedCardResponse } from './types';
 
 const SYSTEM_PROMPT = `You are a conversation card designer for Kyoto de Cross, a cross-cultural dinner experience in Kyoto, Japan.

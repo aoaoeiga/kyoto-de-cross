@@ -1,5 +1,8 @@
 'use client';
 
+/**
+ * イベント・参加者取得、イベント作成・参加のフック
+ */
 import { useState, useEffect, useCallback } from 'react';
 import { supabase } from '@/lib/supabase';
 import { Event, EventParticipant, User, Profile } from '@/lib/types';
@@ -24,17 +27,28 @@ export function useEvent(eventId: string) {
       if (eventError) throw eventError;
       setEvent(eventData);
 
+      // event_participants -> users (user_id) -> profiles (user_id)
       const { data: participantData, error: participantError } = await supabase
         .from('event_participants')
         .select(`
           *,
-          user:users(*),
-          profile:users(profiles(*))
+          user:users(id, name, profiles(one_word, indoor_outdoor, morning_night, current_hobby, favorite_food, dream_country, biggest_worry, future_dream, secret))
         `)
         .eq('event_id', eventId);
 
       if (participantError) throw participantError;
-      setParticipants(participantData || []);
+
+      // profiles は配列で返るため、先頭を取得
+      const normalized = (participantData || []).map((p) => {
+        const u = (p as { user?: { name?: string; profiles?: unknown[] } }).user;
+        const profile = Array.isArray(u?.profiles) ? u.profiles[0] : undefined;
+        return {
+          ...p,
+          user: u,
+          profile,
+        };
+      });
+      setParticipants(normalized);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to fetch event');
     } finally {

@@ -1,5 +1,9 @@
 'use client';
 
+/**
+ * プロフィール取得・保存フック
+ * ログインユーザーの profiles テーブルを操作
+ */
 import { useState, useEffect, useCallback } from 'react';
 import { supabase } from '@/lib/supabase';
 import { Profile } from '@/lib/types';

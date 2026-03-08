@@ -1,3 +1,7 @@
+/**
+ * プロフィール設問の定義
+ * Layer 1: 共有可能 / Layer 2: 匿名でカード生成に活用
+ */
 import { ProfileQuestion } from './types';
 
 export const PROFILE_QUESTIONS: ProfileQuestion[] = [
