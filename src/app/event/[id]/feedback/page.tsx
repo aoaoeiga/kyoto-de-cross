@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { useRouter, useParams } from 'next/navigation';
 import { supabase } from '@/lib/supabase';
@@ -45,6 +45,13 @@ export default function FeedbackPage() {
     }
   }
 
+  // フィードバック送信後はホームへ自動リダイレクト
+  useEffect(() => {
+    if (!submitted) return;
+    const t = setTimeout(() => router.push('/'), 2500);
+    return () => clearTimeout(t);
+  }, [submitted, router]);
+
   if (submitted) {
     return (
       <div className="flex min-h-screen min-h-dvh flex-col items-center justify-center px-6 bg-bg">
@@ -61,16 +68,12 @@ export default function FeedbackPage() {
           <p className="mb-2 font-narrative text-xl text-text-main">
             また会いましょう。
           </p>
-          <p className="mb-12 font-sans text-sm text-text-sub italic">
+          <p className="mb-6 font-sans text-sm text-text-sub italic">
             See you again.
           </p>
-          <motion.button
-            whileTap={{ scale: 0.97 }}
-            onClick={() => router.push('/')}
-            className="font-sans text-sm text-gold/50 transition-colors hover:text-gold"
-          >
-            ホームに戻る / Back to Home
-          </motion.button>
+          <p className="font-sans text-xs text-text-sub/60">
+            ホームへ移動しています... / Redirecting...
+          </p>
         </motion.div>
       </div>
     );

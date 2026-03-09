@@ -175,7 +175,7 @@ export default function LobbyPage() {
           </div>
         )}
 
-        {!isHost && (
+        {!isHost && event?.status !== 'active' && (
           <div className="text-center">
             <div className="mx-auto mb-3 h-6 w-6 animate-spin rounded-full border-2 border-gold/20 border-t-gold" />
             <p className="font-sans text-sm text-text-sub">
@@ -183,6 +183,25 @@ export default function LobbyPage() {
             </p>
             <p className="mt-1 font-sans text-xs text-text-sub/60 italic">
               Waiting for host to start...
+            </p>
+          </div>
+        )}
+
+        {/* カード生成済み：非ホストはスマホを置く案内 */}
+        {!isHost && event?.status === 'active' && (
+          <div className="mx-auto max-w-sm rounded-xl border border-gold/30 bg-gold/5 px-6 py-8 text-center">
+            <p className="mb-4 font-display text-lg font-bold text-gold">
+              カードが生成されました
+            </p>
+            <div className="gold-line mx-auto mb-4" />
+            <p className="font-sans text-sm leading-relaxed text-text-main">
+              ホストの案内に従って、対話を楽しんでください。
+            </p>
+            <p className="mt-3 font-sans text-sm leading-relaxed text-text-main">
+              スマホはテーブルに置いて、目の前のひとと向き合いましょう。
+            </p>
+            <p className="mt-6 font-sans text-xs text-text-sub italic">
+              Cards are ready. Follow the host. Put your phone down.
             </p>
           </div>
         )}

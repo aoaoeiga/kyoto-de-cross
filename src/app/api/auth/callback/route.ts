@@ -46,5 +46,13 @@ export async function GET(request: NextRequest) {
     });
   }
 
-  return NextResponse.redirect(new URL('/dashboard', requestUrl.origin));
+  // ログイン前にいた画面（QR参加など）へ戻す
+  const redirectCookie = request.cookies.get('auth_redirect')?.value;
+  const decoded = redirectCookie ? decodeURIComponent(redirectCookie) : '';
+  const redirectPath = decoded && decoded.startsWith('/') ? decoded : '/dashboard';
+  const redirectUrl = new URL(redirectPath, requestUrl.origin);
+
+  const res = NextResponse.redirect(redirectUrl);
+  res.cookies.delete('auth_redirect');
+  return res;
 }

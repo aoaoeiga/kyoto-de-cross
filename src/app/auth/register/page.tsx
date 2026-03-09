@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { motion } from 'framer-motion';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import { supabase } from '@/lib/supabase';
 import Button from '@/components/ui/Button';
@@ -10,6 +10,7 @@ import Header from '@/components/layout/Header';
 
 export default function RegisterPage() {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -39,7 +40,12 @@ export default function RegisterPage() {
 
       if (insertError) throw insertError;
 
-      router.push('/profile');
+      const redirect = searchParams.get('redirect');
+      const profileUrl =
+        redirect && redirect.startsWith('/')
+          ? `/profile?redirect=${encodeURIComponent(redirect)}`
+          : '/profile';
+      router.push(profileUrl);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Registration failed');
     } finally {
@@ -47,9 +53,15 @@ export default function RegisterPage() {
     }
   }
 
+  const redirect = searchParams.get('redirect');
+  const backHref =
+    redirect && redirect.startsWith('/')
+      ? `/auth/login?redirect=${encodeURIComponent(redirect)}`
+      : '/auth/login';
+
   return (
     <div className="flex min-h-screen min-h-dvh flex-col items-center justify-center px-6">
-      <Header showBack backHref="/auth/login" />
+      <Header showBack backHref={backHref} />
 
       <motion.div
         initial={{ opacity: 0, y: 20 }}

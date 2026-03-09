@@ -131,12 +131,17 @@ export default function PlayPage() {
 
   return (
     <div className="flex min-h-screen min-h-dvh flex-col bg-bg">
-      {/* Progress dots - minimal at top */}
-      <div className="fixed top-0 left-0 right-0 z-50 bg-bg/80 py-3 backdrop-blur-md">
-        <ProgressDots
-          total={screens.length}
-          current={currentScreen}
-        />
+      {/* ヘッダー: 戻る + 進捗 */}
+      <div className="fixed top-0 left-0 right-0 z-50 flex items-center justify-between bg-bg/80 px-4 py-3 backdrop-blur-md">
+        <button
+          type="button"
+          onClick={() => router.push(`/event/${eventId}/lobby`)}
+          className="font-sans text-sm text-text-sub transition-colors hover:text-gold"
+        >
+          <span className="mr-1 opacity-60">&larr;</span> 戻る
+        </button>
+        <ProgressDots total={screens.length} current={currentScreen} />
+        <div className="w-12" />
       </div>
 
       {/* Main content - full screen immersion */}
@@ -265,10 +270,10 @@ export default function PlayPage() {
           ) : (
             <motion.button
               whileTap={{ scale: 0.97 }}
-              onClick={() => router.push(`/event/${eventId}/feedback`)}
+              onClick={() => router.push(feedbackSubmitted ? '/' : `/event/${eventId}/feedback`)}
               className="rounded-lg bg-gold px-10 py-3 font-sans text-sm font-medium text-bg transition-all duration-200 hover:bg-gold-hover"
             >
-              終了 / Finish
+              {feedbackSubmitted ? 'ホームへ / Home' : '終了 / Finish'}
             </motion.button>
           )}
         </div>

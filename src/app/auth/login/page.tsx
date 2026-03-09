@@ -2,14 +2,18 @@
 
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import { supabase } from '@/lib/supabase';
 import Button from '@/components/ui/Button';
 import Header from '@/components/layout/Header';
 
+const REDIRECT_COOKIE = 'auth_redirect';
+const REDIRECT_MAX_AGE = 600; // 10分
+
 export default function LoginPage() {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
@@ -20,13 +24,14 @@ export default function LoginPage() {
     async function checkExistingSession() {
       const { data: { user } } = await supabase.auth.getUser();
       if (user) {
-        router.replace('/dashboard');
+        const r = searchParams.get('redirect');
+        router.replace(r && r.startsWith('/') ? r : '/dashboard');
       } else {
         setCheckingAuth(false);
       }
     }
     checkExistingSession();
-  }, [router]);
+  }, [router, searchParams]);
 
   async function handleLogin(e: React.FormEvent) {
     e.preventDefault();
@@ -42,7 +47,8 @@ export default function LoginPage() {
       setError(error.message);
       setLoading(false);
     } else {
-      router.replace('/dashboard');
+      const r = searchParams.get('redirect');
+      router.replace(r && r.startsWith('/') ? r : '/dashboard');
     }
   }
 
@@ -54,9 +60,12 @@ export default function LoginPage() {
     );
   }
 
+  const redirect = searchParams.get('redirect');
+  const backHref = redirect && redirect.startsWith('/') ? redirect : '/';
+
   return (
     <div className="flex min-h-screen min-h-dvh flex-col items-center justify-center px-6">
-      <Header showBack />
+      <Header showBack backHref={backHref} />
 
       <motion.div
         initial={{ opacity: 0, y: 20 }}
@@ -73,12 +82,16 @@ export default function LoginPage() {
 
         <button
           type="button"
-          onClick={() =>
+          onClick={() => {
+            const redirect = searchParams.get('redirect');
+            if (redirect && redirect.startsWith('/')) {
+              document.cookie = `${REDIRECT_COOKIE}=${encodeURIComponent(redirect)}; path=/; max-age=${REDIRECT_MAX_AGE}; SameSite=Lax`;
+            }
             supabase.auth.signInWithOAuth({
               provider: 'google',
               options: { redirectTo: window.location.origin + '/api/auth/callback' },
-            })
-          }
+            });
+          }}
           className="flex w-full items-center justify-center gap-3 rounded-xl border border-white/10 bg-bg-card px-5 py-4 font-sans text-text-main transition-colors duration-200 hover:border-gold/30"
         >
           <svg width="18" height="18" viewBox="0 0 24 24">
@@ -132,7 +145,10 @@ export default function LoginPage() {
         <div className="gold-line mx-auto mt-8 mb-4" />
         <p className="text-center font-sans text-xs text-text-sub">
           アカウントをお持ちでない方は
-          <Link href="/auth/register" className="ml-1 text-gold underline underline-offset-2">
+          <Link
+            href={redirect ? `/auth/register?redirect=${encodeURIComponent(redirect)}` : '/auth/register'}
+            className="ml-1 text-gold underline underline-offset-2"
+          >
             新規登録
           </Link>
         </p>

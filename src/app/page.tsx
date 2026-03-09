@@ -1,21 +1,34 @@
 'use client';
 
 /** ランディングページ */
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
 import Link from 'next/link';
 import Button from '@/components/ui/Button';
 
 export default function LandingPage() {
-  // Supabase が /?code=... にリダイレクトしてきた場合、コールバックへ転送
+  const [isRedirecting, setIsRedirecting] = useState(false);
+
+  // Supabase が /?code=... にリダイレクトしてきた場合、コールバックへ転送（ログイン画面の二重表示を防ぐ）
   useEffect(() => {
     if (typeof window === 'undefined') return;
     const params = new URLSearchParams(window.location.search);
     const code = params.get('code');
     if (code) {
+      setIsRedirecting(true);
       window.location.replace(`/api/auth/callback?code=${encodeURIComponent(code)}`);
     }
   }, []);
+
+  // OAuth 復帰中はログイン/登録ボタンを出さず、ローディングだけ表示
+  if (isRedirecting) {
+    return (
+      <div className="flex min-h-screen min-h-dvh flex-col items-center justify-center bg-bg">
+        <div className="h-8 w-8 animate-spin rounded-full border-2 border-gold/20 border-t-gold" />
+        <p className="mt-4 font-sans text-sm text-text-sub">ログイン中... / Signing in...</p>
+      </div>
+    );
+  }
 
   return (
     <div className="tarot-pattern flex min-h-screen min-h-dvh flex-col items-center justify-center px-6">

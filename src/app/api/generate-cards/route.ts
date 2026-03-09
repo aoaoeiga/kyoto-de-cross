@@ -103,12 +103,31 @@ export async function POST(request: Request) {
 ${JSON.stringify(input, null, 2)}`;
 
     const anthropic = new Anthropic({ apiKey });
-    const response = await anthropic.messages.create({
-      model: 'claude-sonnet-4-20250514',
-      max_tokens: 4096,
-      system: SYSTEM_PROMPT,
-      messages: [{ role: 'user', content: userMessage }],
-    });
+    let response;
+    try {
+      response = await anthropic.messages.create({
+        model: 'claude-sonnet-4-20250514',
+        max_tokens: 4096,
+        system: SYSTEM_PROMPT,
+        messages: [{ role: 'user', content: userMessage }],
+      });
+    } catch (anthropicError: unknown) {
+      const msg = anthropicError instanceof Error ? anthropicError.message : String(anthropicError);
+      const isAuthError =
+        msg.includes('invalid x-api-key') ||
+        msg.includes('authentication_error') ||
+        (anthropicError as { status?: number })?.status === 401;
+      if (isAuthError) {
+        return NextResponse.json(
+          {
+            error:
+              'Anthropic API キーが無効です。Vercel の環境変数 ANTHROPIC_API_KEY を確認してください。 / Invalid or missing ANTHROPIC_API_KEY.',
+          },
+          { status: 401 }
+        );
+      }
+      throw anthropicError;
+    }
 
     const textBlock = response.content.find((c) => c.type === 'text');
     const text = textBlock?.type === 'text' ? textBlock.text : '';

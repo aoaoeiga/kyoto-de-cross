@@ -22,7 +22,8 @@ export default function JoinEventPage() {
     async function getUser() {
       const { data: { user: authUser } } = await supabase.auth.getUser();
       if (!authUser) {
-        router.push('/auth/login');
+        // ログイン後にこの参加画面へ直行するよう redirect を付与
+        router.push(`/auth/login?redirect=${encodeURIComponent(`/event/join/${code}`)}`);
         return;
       }
       const { data } = await supabase
@@ -38,7 +39,7 @@ export default function JoinEventPage() {
       }
     }
     getUser();
-  }, [router]);
+  }, [router, code]);
 
   async function handleJoin() {
     if (!userId) return;

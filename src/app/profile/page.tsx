@@ -28,6 +28,8 @@ function ProfileContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const editMode = searchParams.get('edit') === 'true';
+  const redirect = searchParams.get('redirect');
+  const redirectPath = redirect && redirect.startsWith('/') ? redirect : '/dashboard';
 
   const [userId, setUserId] = useState<string | null>(null);
   const [currentQuestion, setCurrentQuestion] = useState(0);
@@ -41,7 +43,8 @@ function ProfileContent() {
     async function getUser() {
       const { data: { user: authUser } } = await supabase.auth.getUser();
       if (!authUser) {
-        router.push('/auth/login');
+        const r = redirect ? `/auth/login?redirect=${encodeURIComponent(redirect)}` : '/auth/login';
+        router.push(r);
         return;
       }
       const { data: userData } = await supabase
@@ -53,11 +56,12 @@ function ProfileContent() {
       if (userData) {
         setUserId(userData.id);
       } else {
-        router.push('/auth/register');
+        const r = redirect ? `/auth/register?redirect=${encodeURIComponent(redirect)}` : '/auth/register';
+        router.push(r);
       }
     }
     getUser();
-  }, [router]);
+  }, [router, redirect]);
 
   // When profile loads in edit mode, populate answers
   useEffect(() => {
@@ -77,7 +81,7 @@ function ProfileContent() {
   if (hasProfile) {
     return (
       <div className="flex min-h-screen min-h-dvh flex-col px-6 pt-20 pb-8">
-        <Header showBack backHref="/dashboard" />
+        <Header showBack backHref={redirectPath} />
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -123,7 +127,7 @@ function ProfileContent() {
             </Button>
             <Button
               variant="ghost"
-              onClick={() => router.push('/dashboard')}
+              onClick={() => router.push(redirectPath)}
               className="w-full"
               size="md"
             >
@@ -149,9 +153,9 @@ function ProfileContent() {
       setSaving(false);
       if (editMode || isEditing) {
         setIsEditing(false);
-        router.push('/profile');
+        router.push(redirect ? `/profile?redirect=${encodeURIComponent(redirect)}` : '/profile');
       } else {
-        router.push('/dashboard');
+        router.push(redirectPath);
       }
     }
   }
