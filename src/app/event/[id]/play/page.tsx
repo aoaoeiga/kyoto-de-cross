@@ -29,19 +29,26 @@ export default function PlayPage() {
     async function loadCards() {
       const { data: cards } = await supabase
         .from('generated_cards')
-        .select('*')
+        .select('phase, card_number, question_ja, question_en, source_type')
         .eq('event_id', eventId)
         .order('card_number');
 
-      const generatedCards: GeneratedCardResponse[] = (cards || []).map(
-        (c) => ({
-          phase: c.phase,
-          card_number: c.card_number,
-          question_ja: c.question_ja,
-          question_en: c.question_en,
-          source_type: c.source_type,
-        })
-      );
+      type GeneratedCardRow = {
+        phase: number;
+        card_number: number;
+        question_ja: string;
+        question_en: string;
+        source_type: GeneratedCardResponse['source_type'];
+      };
+
+      const rows = (cards ?? []) as unknown as GeneratedCardRow[];
+      const generatedCards: GeneratedCardResponse[] = rows.map((c) => ({
+        phase: c.phase,
+        card_number: c.card_number,
+        question_ja: c.question_ja,
+        question_en: c.question_en,
+        source_type: c.source_type,
+      }));
 
       setScreens(buildScreens(generatedCards));
       setLoading(false);
