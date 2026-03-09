@@ -1,11 +1,22 @@
 'use client';
 
 /** ランディングページ */
+import { useEffect } from 'react';
 import { motion } from 'framer-motion';
 import Link from 'next/link';
 import Button from '@/components/ui/Button';
 
 export default function LandingPage() {
+  // Supabase が /?code=... にリダイレクトしてきた場合、コールバックへ転送
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+    const params = new URLSearchParams(window.location.search);
+    const code = params.get('code');
+    if (code) {
+      window.location.replace(`/api/auth/callback?code=${encodeURIComponent(code)}`);
+    }
+  }, []);
+
   return (
     <div className="tarot-pattern flex min-h-screen min-h-dvh flex-col items-center justify-center px-6">
       {/* Logo / Title */}
