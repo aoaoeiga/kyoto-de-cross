@@ -76,7 +76,7 @@ export default function DashboardPage() {
       if (participations) {
         const participatedIds = participations
           .map((p: { event_id: string }) => p.event_id)
-          .filter((id) => !allEventIds.has(id));
+          .filter((id: string) => !allEventIds.has(id));
 
         if (participatedIds.length > 0) {
           const { data: participatedEvents } = await supabase
