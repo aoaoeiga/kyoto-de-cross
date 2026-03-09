@@ -38,13 +38,22 @@ export function useEvent(eventId: string) {
 
       if (participantError) throw participantError;
 
+      type ParticipantRow = EventParticipant & {
+        user?: {
+          id: string;
+          name: string;
+          profiles?: Profile[];
+        };
+      };
+
       // profiles は配列で返るため、先頭を取得
-      const normalized = (participantData || []).map((p) => {
-        const u = (p as { user?: { name?: string; profiles?: unknown[] } }).user;
+      const rows = (participantData ?? []) as unknown as ParticipantRow[];
+      const normalized = rows.map((p) => {
+        const u = p.user;
         const profile = Array.isArray(u?.profiles) ? u.profiles[0] : undefined;
         return {
           ...p,
-          user: u,
+          user: (u || { id: '', auth_id: '', name: '', created_at: '' }) as User,
           profile,
         };
       });
