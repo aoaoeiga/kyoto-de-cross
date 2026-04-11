@@ -86,13 +86,14 @@ export default function JoinEventPage() {
         animate={{ opacity: 1, y: 0 }}
         className="text-center"
       >
-        <h1 className="mb-2 font-serif text-2xl text-gold">
-          Kyoto de Cross
+        <h1 className="mb-2 font-display text-2xl text-gold">
+          TSUNAKAN
         </h1>
-        <p className="mb-2 text-sm text-white/60">
+        <p className="mb-8 font-sans text-base text-text-sub">
           イベントに参加しますか？
+          <span className="mx-2 text-text-sub/50">/</span>
+          Join this event?
         </p>
-        <p className="mb-8 text-sm text-white/30">Join this event?</p>
 
         <div className="mb-8 rounded-lg border border-gold/20 bg-navy-light px-6 py-4">
           <p className="text-xs text-white/40">Join Code</p>

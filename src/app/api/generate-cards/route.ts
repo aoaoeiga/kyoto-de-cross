@@ -7,7 +7,7 @@ import Anthropic from '@anthropic-ai/sdk';
 import { createClient } from '@/lib/supabase/server';
 import type { CardGenerationInput, GeneratedCardResponse } from '@/lib/types';
 
-const SYSTEM_PROMPT = `You are a conversation card designer for Kyoto de Cross, a cross-cultural dinner experience in Kyoto, Japan.
+const SYSTEM_PROMPT = `You are a conversation card designer for TSUNAKAN (ツナカン), a cross-cultural dinner experience in Kyoto, Japan.
 
 Generate 11 conversation cards (cards 1-11). Card 12 is fixed and not generated. Each card must have a Japanese question and English translation.
 

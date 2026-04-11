@@ -9,6 +9,12 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
+        tsunakan: {
+          orange: '#FF6B35',
+          'orange-hover': '#E85A28',
+          cream: '#FDFAF4',
+          dark: '#1A1A1A',
+        },
         bg: {
           DEFAULT: '#0B0E14',
           card: '#141B2D',
@@ -33,9 +39,9 @@ const config: Config = {
         success: '#40C980',
       },
       fontFamily: {
-        display: ['"Playfair Display"', 'serif'],
-        narrative: ['"Cormorant Garamond"', 'serif'],
-        sans: ['Inter', 'sans-serif'],
+        display: ['"Noto Serif JP"', 'serif'],
+        narrative: ['"Noto Serif JP"', 'serif'],
+        sans: ['"Noto Sans JP"', 'system-ui', 'sans-serif'],
         jp: ['"Noto Serif JP"', 'serif'],
       },
       boxShadow: {

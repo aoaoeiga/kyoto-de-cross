@@ -95,7 +95,7 @@ export default function LobbyPage() {
         {/* Event info */}
         <div className="mb-8 text-center">
           <h1 className="mb-1 font-display text-xl font-bold text-gold">
-            {event?.title || 'Kyoto de Cross'}
+            {event?.title || 'TSUNAKAN（ツナカン）'}
           </h1>
           {event?.location && (
             <p className="font-sans text-sm text-text-sub">{event.location}</p>

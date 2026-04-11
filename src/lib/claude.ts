@@ -4,7 +4,7 @@
  */
 import { CardGenerationInput, GeneratedCardResponse } from './types';
 
-const SYSTEM_PROMPT = `You are a conversation card designer for Kyoto de Cross, a cross-cultural dinner experience in Kyoto, Japan.
+const SYSTEM_PROMPT = `You are a conversation card designer for TSUNAKAN (ツナカン), a cross-cultural dinner experience in Kyoto, Japan.
 
 Generate 12 conversation cards in 3 phases. Each card must have a Japanese question and English translation.
 

@@ -104,11 +104,13 @@ export default function PlayPage() {
           className="text-center"
         >
           <h1 className="mb-4 font-display text-2xl font-bold text-gold">
-            Kyoto de Cross
+            TSUNAKAN
           </h1>
           <div className="mx-auto mb-4 h-6 w-6 animate-spin rounded-full border-2 border-gold/20 border-t-gold" />
-          <p className="font-sans text-sm text-text-sub">
-            Loading experience...
+          <p className="font-sans text-base text-text-sub">
+            読み込み中
+            <span className="mx-2 text-text-sub/50">/</span>
+            Loading
           </p>
         </motion.div>
       </div>

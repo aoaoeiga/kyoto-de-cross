@@ -19,7 +19,7 @@ export function buildScreens(generatedCards?: GeneratedCardResponse[]): Screen[]
     {
       id: 1,
       type: 'narrative',
-      title: 'Kyoto de Cross',
+      title: 'TSUNAKAN（ツナカン）',
       content:
         'ようこそ。今日ここに集まった皆さんは、まだお互いのことを何も知りません。それが最高の状態です。これから90分間、普通の食事会とは少し違う体験が始まります。',
       content_en:

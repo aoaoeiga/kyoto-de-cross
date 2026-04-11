@@ -4,7 +4,7 @@ import { motion } from 'framer-motion';
 import { ButtonHTMLAttributes } from 'react';
 
 type ButtonProps = ButtonHTMLAttributes<HTMLButtonElement> & {
-  variant?: 'primary' | 'secondary' | 'ghost';
+  variant?: 'primary' | 'secondary' | 'ghost' | 'tsunakan' | 'tsunakan-outline';
   size?: 'sm' | 'md' | 'lg';
 };
 
@@ -22,6 +22,10 @@ export default function Button({
     primary: 'bg-gold text-bg hover:bg-gold-hover active:brightness-90',
     secondary: 'border border-gold/40 text-gold hover:border-gold hover:bg-gold/5 active:bg-gold/10',
     ghost: 'text-gold/60 hover:text-gold hover:bg-white/5',
+    tsunakan:
+      'bg-tsunakan-orange text-white hover:bg-tsunakan-orange-hover active:brightness-95 shadow-sm',
+    'tsunakan-outline':
+      'border-2 border-tsunakan-orange text-tsunakan-orange bg-transparent hover:bg-tsunakan-orange/5 active:bg-tsunakan-orange/10',
   };
 
   const sizes = {

@@ -1,4 +1,4 @@
--- Kyoto de Cross MVP - Database Schema
+-- TSUNAKAN（ツナカン） MVP - Database Schema
 -- Run this in your Supabase SQL editor
 
 -- Users table
@@ -33,7 +33,7 @@ CREATE TABLE IF NOT EXISTS profiles (
 CREATE TABLE IF NOT EXISTS events (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   host_id UUID REFERENCES users(id),
-  title TEXT NOT NULL DEFAULT 'Kyoto de Cross',
+  title TEXT NOT NULL DEFAULT 'TSUNAKAN（ツナカン）',
   event_date TIMESTAMPTZ,
   location TEXT,
   qr_code TEXT UNIQUE, -- short code for QR join

@@ -94,7 +94,7 @@ export function useCreateEvent() {
         .from('events')
         .insert({
           host_id: hostId,
-          title: title || 'Kyoto de Cross',
+          title: title || 'TSUNAKAN（ツナカン）',
           location,
           qr_code: qrCode,
           status: 'waiting',
