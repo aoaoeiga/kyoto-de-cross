@@ -12,17 +12,17 @@ type HeaderProps = {
 export default function Header({ showBack, backHref = '/', theme = 'dark' }: HeaderProps) {
   const isLight = theme === 'light';
   const bar = isLight
-    ? 'bg-tsunakan-cream/90 border-b border-tsunakan-dark/5'
-    : 'bg-bg/80 backdrop-blur-md';
+    ? 'relative bg-tsunakan-cream/90 border-b border-tsunakan-dark/5'
+    : 'relative bg-bg/80 backdrop-blur-md';
   const backClass = isLight
-    ? 'font-sans text-base text-tsunakan-dark/60 transition-colors hover:text-tsunakan-orange'
-    : 'font-sans text-sm text-text-sub transition-colors hover:text-gold';
+    ? 'relative z-10 font-sans text-base text-tsunakan-dark/60 transition-colors hover:text-tsunakan-orange'
+    : 'relative z-10 font-sans text-sm text-text-sub transition-colors hover:text-gold';
   const brandClass = isLight
-    ? 'font-display text-base font-semibold text-tsunakan-dark transition-colors hover:text-tsunakan-orange'
-    : 'font-display text-sm font-bold text-gold/70 transition-colors hover:text-gold';
+    ? 'font-display text-sm font-semibold text-tsunakan-dark transition-colors hover:text-tsunakan-orange sm:text-base'
+    : 'font-display text-xs font-bold text-gold/70 transition-colors hover:text-gold sm:text-sm';
 
   return (
-    <header className={`fixed top-0 left-0 right-0 z-50 flex items-center justify-between px-5 py-4 ${bar}`}>
+    <header className={`flex items-center justify-between px-5 py-4 ${bar}`}>
       {showBack ? (
         <Link href={backHref} className={backClass}>
           <span className="mr-1 opacity-60">&larr;</span>
@@ -33,12 +33,15 @@ export default function Header({ showBack, backHref = '/', theme = 'dark' }: Hea
           </span>
         </Link>
       ) : (
-        <div />
+        <div className="w-12 shrink-0" />
       )}
-      <Link href="/" className={brandClass}>
-        TSUNAKAN
+      <Link
+        href="/"
+        className={`${brandClass} pointer-events-auto absolute left-1/2 top-1/2 max-w-[min(100%,14rem)] -translate-x-1/2 -translate-y-1/2 px-2 text-center leading-snug sm:max-w-[calc(100%-10rem)]`}
+      >
+        TSUNAKAN（ツナカン）
       </Link>
-      <div className="w-12" />
+      <div className="w-12 shrink-0" />
     </header>
   );
 }

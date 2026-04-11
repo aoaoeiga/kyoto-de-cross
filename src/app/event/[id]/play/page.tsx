@@ -103,8 +103,8 @@ export default function PlayPage() {
           transition={{ duration: 1 }}
           className="text-center"
         >
-          <h1 className="mb-4 font-display text-2xl font-bold text-gold">
-            TSUNAKAN
+          <h1 className="mb-4 px-2 text-center font-display text-xl font-bold leading-snug text-gold sm:text-2xl">
+            TSUNAKAN（ツナカン）
           </h1>
           <div className="mx-auto mb-4 h-6 w-6 animate-spin rounded-full border-2 border-gold/20 border-t-gold" />
           <p className="font-sans text-base text-text-sub">

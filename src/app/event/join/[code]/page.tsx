@@ -86,8 +86,8 @@ export default function JoinEventPage() {
         animate={{ opacity: 1, y: 0 }}
         className="text-center"
       >
-        <h1 className="mb-2 font-display text-2xl text-gold">
-          TSUNAKAN
+        <h1 className="mb-2 px-2 text-center font-display text-xl leading-snug text-gold sm:text-2xl">
+          TSUNAKAN（ツナカン）
         </h1>
         <p className="mb-8 font-sans text-base text-text-sub">
           イベントに参加しますか？
